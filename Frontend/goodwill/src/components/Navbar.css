@@ -1,0 +1,182 @@
+/* Core Variables */
+:root {
+  --sm-bg: #0d0e12;
+  --sm-surface: #1a1b23;
+  --sm-surface-hover: #21232e;
+  --sm-accent: #ea580c;
+  --sm-accent-hover: #c2410c;
+  --sm-text-main: #ffffff;
+  --sm-text-muted: #9ca3af;
+  --sm-border: #374151;
+  --sm-success: #10b981;
+  --sm-warning: #f59e0b;
+  --sm-danger: #ef4444;
+  --sm-error: #ef4444;
+  --sm-font: 'Inter', system-ui, sans-serif;
+  --sm-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --sm-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Core Navbar Layout --- */
+.sm-dash-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 4rem;
+  background-color: #111217;
+  border-bottom: 1px solid var(--sm-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Logo Group */
+.sm-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.sm-logo-group:hover {
+  transform: scale(1.02);
+}
+
+.sm-logo-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--sm-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.sm-logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--sm-text-main);
+}
+
+/* --- Right Side Actions --- */
+.sm-nav-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.sm-nav-divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--sm-border);
+}
+
+/* Notification Button */
+.sm-nav-icon-btn {
+  background: none;
+  border: none;
+  color: var(--sm-text-muted);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.sm-nav-icon-btn:hover {
+  color: var(--sm-text-main);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sm-nav-icon-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.sm-notification-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: var(--sm-danger);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #111217; /* Creates the cutout effect against the dark nav */
+}
+
+/* User Profile Block */
+.sm-nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.sm-nav-profile:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sm-avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--sm-border);
+  object-fit: cover;
+}
+
+.sm-user-greeting {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--sm-text-main);
+}
+
+/* Logout Button */
+.sm-btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid var(--sm-border);
+  color: var(--sm-text-muted);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.sm-btn-logout:hover {
+  border-color: var(--sm-error);
+  color: var(--sm-error);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.sm-logout-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+  .sm-dash-nav { padding: 1rem 2rem; }
+  .sm-user-greeting { display: none; } /* Hides name to save space */
+  .sm-btn-logout span { display: none; } /* Hides text to save space */
+  .sm-btn-logout { padding: 0.5rem; }
+  .sm-nav-actions-right { gap: 1rem; }
+}
