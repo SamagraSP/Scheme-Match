@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { clearAuthStorage, getStoredUser, isAuthenticated as hasAuthSession } from '../services/auth';
 
 const Navbar = ({ theme, onToggleTheme }) => {
   const [openNotifications, setOpenNotifications] = useState(false);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem('schemeMatch_token')));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => hasAuthSession());
+  const [user, setUser] = useState(() => getStoredUser());
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    setIsAuthenticated(Boolean(localStorage.getItem('schemeMatch_token')));
+    setIsAuthenticated(hasAuthSession());
+    setUser(getStoredUser());
   }, [location.pathname]);
 
-  const notifications = []; // Placeholder for notifications
+  const notifications = [];
   const profileItems = [
     { label: 'Profile', action: 'profile' },
     { label: 'Saved Schemes', action: 'saved' },
@@ -23,14 +26,16 @@ const Navbar = ({ theme, onToggleTheme }) => {
 
   const handleProfileAction = (action) => {
     setOpenProfileMenu(false);
+
     if (action === 'logout') {
-      localStorage.removeItem('schemeMatch_token');
+      clearAuthStorage();
       setIsAuthenticated(false);
-      navigate('/dashboard');
+      setUser(null);
+      navigate('/login');
       return;
     }
 
-    if (action === 'settings' || action === 'saved') {
+    if (action === 'settings' || action === 'saved' || action === 'profile') {
       navigate('/dashboard');
     }
   };
@@ -40,7 +45,7 @@ const Navbar = ({ theme, onToggleTheme }) => {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <button
           type="button"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate(isAuthenticated ? '/dashboard' : '/')}
           className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 text-sm font-semibold text-white shadow-sm shadow-orange-500/20">
@@ -50,26 +55,31 @@ const Navbar = ({ theme, onToggleTheme }) => {
         </button>
 
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/login')}
-            className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/register')}
-            className="inline-flex h-12 items-center justify-center rounded-full border border-transparent bg-gradient-to-r from-orange-500 to-orange-600 px-4 text-sm font-semibold text-white shadow-sm shadow-orange-500/30 transition hover:from-orange-400 hover:to-orange-500"
-          >
-            Register
-          </button>
+          {!isAuthenticated && (
+            <>
+              <button
+                type="button"
+                onClick={() => navigate('/login')}
+                className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/register')}
+                className="inline-flex h-12 items-center justify-center rounded-full border border-transparent bg-gradient-to-r from-orange-500 to-orange-600 px-4 text-sm font-semibold text-white shadow-sm shadow-orange-500/30 transition hover:from-orange-400 hover:to-orange-500"
+              >
+                Register
+              </button>
+            </>
+          )}
+
           <button
             type="button"
             onClick={onToggleTheme}
             className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
           >
-            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+            {theme === 'dark' ? 'Light' : 'Dark'}
           </button>
 
           {isAuthenticated && (
@@ -112,12 +122,18 @@ const Navbar = ({ theme, onToggleTheme }) => {
                         </button>
                       </div>
                       <div className="space-y-3 max-h-72 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-300/70 dark:scrollbar-thumb-slate-700">
-                        {notifications.map((item) => (
-                          <div key={item.title} className="rounded-3xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-700/80 dark:bg-slate-950">
-                            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
-                            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
+                        {notifications.length === 0 ? (
+                          <div className="rounded-3xl border border-slate-200/80 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-700/80 dark:bg-slate-950 dark:text-slate-400">
+                            No notifications yet.
                           </div>
-                        ))}
+                        ) : (
+                          notifications.map((item) => (
+                            <div key={item.title} className="rounded-3xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-700/80 dark:bg-slate-950">
+                              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
+                              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{item.body}</p>
+                            </div>
+                          ))
+                        )}
                       </div>
                     </motion.div>
                   )}
@@ -131,11 +147,11 @@ const Navbar = ({ theme, onToggleTheme }) => {
                   className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-700 dark:hover:bg-slate-950"
                 >
                   <img
-                    src="https://ui-avatars.com/api/?name=Ramesh+Kumar&background=2563eb&color=fff&bold=true"
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'SchemeMatch User')}&background=2563eb&color=fff&bold=true`}
                     alt="Avatar"
                     className="h-10 w-10 rounded-full border border-slate-200 dark:border-slate-700"
                   />
-                  <span>Ramesh K.</span>
+                  <span>{user?.name || 'SchemeMatch User'}</span>
                 </button>
 
                 <AnimatePresence>

@@ -395,3 +395,110 @@ html, body {
     padding: 0.5rem;
   }
 }
+
+/* Light Theme Auth Layout Overrides */
+.sm-reg-container {
+  padding: 2.25rem 1rem 4rem;
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.14), transparent 35%),
+    linear-gradient(180deg, #fff7ed 0%, #ffffff 30%, #f8fafc 100%);
+  color: #0f172a;
+}
+
+.sm-reg-main {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.sm-auth-page-topbar {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 0.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.sm-back-btn-reg {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+.sm-back-btn-reg:hover {
+  transform: translateX(-2px);
+  border-color: rgba(249, 115, 22, 0.25);
+  box-shadow: 0 20px 55px rgba(249, 115, 22, 0.12);
+  background: #fff7ed;
+}
+
+.sm-auth-chip {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.22);
+  color: #c2410c;
+}
+
+.sm-reg-wrapper {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.10);
+}
+
+.sm-reg-wrapper::before {
+  display: none;
+}
+
+.sm-reg-title {
+  -webkit-text-fill-color: initial;
+  background: none;
+  color: #0f172a;
+}
+
+.sm-reg-subtitle {
+  color: rgba(15, 23, 42, 0.68);
+}
+
+.sm-section-title {
+  color: #c2410c;
+}
+
+.sm-divider {
+  background-color: rgba(15, 23, 42, 0.10);
+}
+
+.sm-input-group label {
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.sm-input-group input,
+.sm-input-group select {
+  background-color: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+.sm-input-group input::placeholder {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.sm-input-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.sm-btn-submit {
+  border-radius: 999px;
+  box-shadow: 0 18px 44px rgba(249, 115, 22, 0.20);
+}
+
+.sm-reg-footer {
+  color: rgba(15, 23, 42, 0.6);
+}

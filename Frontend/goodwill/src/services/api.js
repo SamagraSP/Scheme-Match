@@ -1,12 +1,9 @@
 import axios from 'axios';
+import { clearAuthStorage } from './auth';
 
-const API_BASE_URL = 'http://localhost:8000/api';
-
-const clearSession = () => {
-  localStorage.removeItem('schemeMatch_token');
-  localStorage.removeItem('schemeMatch_refresh');
-  localStorage.removeItem('schemeMatch_user');
-};
+// In local dev, use Vite proxy (`/api -> http://localhost:8000`).
+// For deployments where frontend and backend are on different origins, set `VITE_API_BASE_URL`.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export const persistSession = (payload = {}) => {
   if (payload.access) {
@@ -54,19 +51,17 @@ apiClient.interceptors.response.use(
       try {
         const refresh = localStorage.getItem('schemeMatch_refresh');
         if (!refresh) {
-          clearSession();
+          clearAuthStorage();
           window.location.href = '/login';
           return Promise.reject(error);
         }
 
-        const response = await axios.post(`${API_BASE_URL}/auth/refresh/`, {
-          refresh,
-        });
+        const response = await apiClient.post('/auth/refresh/', { refresh });
         persistSession({ access: response.data.access, refresh });
         apiClient.defaults.headers.Authorization = `Bearer ${response.data.access}`;
         return apiClient(originalRequest);
       } catch (refreshError) {
-        clearSession();
+        clearAuthStorage();
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }

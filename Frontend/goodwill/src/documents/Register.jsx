@@ -62,7 +62,7 @@ const Register = () => {
       const response = await authAPI.register(payload);
       persistSession(response.data);
       setSuccessMessage('Profile created successfully. Redirecting to your dashboard...');
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       console.error('Registration failed:', err);
       setError(err.response?.data?.error || 'Registration failed. Please try again.');
@@ -73,16 +73,18 @@ const Register = () => {
 
   return (
     <div className="sm-reg-container">
-      <button
-        type="button"
-        onClick={() => navigate('/')}
-        className="sm-back-btn-reg"
-        aria-label="Back to home"
-      >
-        Back to Home
-      </button>
-
       <main className="sm-reg-main">
+        <div className="sm-auth-page-topbar">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="sm-back-btn-reg"
+            aria-label="Back to home"
+          >
+            Back to Home
+          </button>
+        </div>
+
         <div className="sm-reg-wrapper">
           <div className="sm-reg-header">
             <span className="sm-auth-chip">Create your SchemeMatch profile</span>

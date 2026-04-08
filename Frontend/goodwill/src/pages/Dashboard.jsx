@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { policyAPI } from '../services/api';
 import Chatbot from '../components/Chatbot';
+import { getStoredUser } from '../services/auth';
 
 const initialProfile = {
   age: '',
@@ -47,6 +48,7 @@ const allSchemes = [
 ];
 
 const Dashboard = () => {
+  const [currentUser] = useState(() => getStoredUser());
   const [profile, setProfile] = useState(initialProfile);
   const [schemes, setSchemes] = useState([]);
   const [apiSchemes, setApiSchemes] = useState([]);
@@ -89,12 +91,14 @@ const Dashboard = () => {
     const fallbackSchemes = filteredRecommendations(profile);
 
     try {
-      const response = await axios.post('/api/recommendations', profile, {
-        timeout: 1400,
-      });
-
-      if (response?.data?.schemes?.length) {
-        setSchemes(response.data.schemes);
+      if (apiSchemes.length) {
+        const backendSchemes = apiSchemes.map((scheme) => ({
+          name: scheme.title,
+          description: scheme.description,
+          eligible:
+            Number(profile.income) <= Number(scheme.annual_income_limit || Number.MAX_SAFE_INTEGER),
+        }));
+        setSchemes(backendSchemes);
       } else {
         setSchemes(fallbackSchemes);
       }
@@ -123,7 +127,7 @@ const Dashboard = () => {
               SchemeMatch Dashboard
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
-              Discover government schemes personalized for you.
+              {currentUser?.name ? `Welcome, ${currentUser.name}.` : 'Discover government schemes personalized for you.'}
             </h1>
             <p className="mt-4 max-w-xl text-slate-600 dark:text-slate-400">
               Complete your profile once to receive verified scheme recommendations, eligibility checks, and alerts in a modern, secure dashboard.
@@ -207,8 +211,8 @@ const Dashboard = () => {
               <label className="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                 State
                 <select
-                  value={profile.state}
-                  onChange={(e) => setProfile({ ...profile, state: e.target.value })}
+                  value={profile.location}
+                  onChange={(e) => setProfile({ ...profile, location: e.target.value })}
                   className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-sky-500/20"
                 >
                   <option value="">Choose state</option>

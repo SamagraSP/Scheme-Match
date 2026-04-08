@@ -25,12 +25,12 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
+        email = str(request.data.get('email', '')).strip().lower()
         password = request.data.get('password')
         if not email or not password:
             return Response({'error': 'Email and password are required.'}, status=400)
 
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(email__iexact=email).first()
         if user and user.check_password(password):
             refresh = RefreshToken.for_user(user)
             profile = UserProfile.objects.filter(user=user).first()
@@ -74,9 +74,9 @@ def register(request):
             name=name,
             age=data.get('age'),
             gender=str(data.get('gender')).lower(),
-            location=data.get('location'),
+            location=str(data.get('location')).strip(),
             category=str(data.get('category')).lower(),
-            occupation=data.get('occupation'),
+            occupation=str(data.get('occupation')).strip(),
             income=data.get('income')
         )
         refresh = RefreshToken.for_user(user)
